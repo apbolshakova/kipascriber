@@ -3,8 +3,9 @@ import fs from 'fs';
 import {
     parseInputPageObjectData,
     parseInputStateClassData,
-} from './parse-input';
-import { generateSpecFile } from './generate-spec-file';
+} from './functions/parse-input.mjs';
+import { generateSpecFile } from './functions/generate-spec-file.mjs';
+import { generateDataFile } from './functions/generate-data-file.mjs';
 
 /**
  * @typedef PageObject
@@ -16,7 +17,7 @@ import { generateSpecFile } from './generate-spec-file';
 /**
  * @typedef StateClass
  * @type {object}
- * @property {string} class - CSS-class
+ * @property {string} className - CSS-class
  * @property {string[]} keywords - keywords that indicate to this class
  */
 
