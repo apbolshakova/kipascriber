@@ -18,6 +18,15 @@ import { generateDataFile } from './functions/generate-data-file.mjs';
  * @property {string[]} keywords - keywords that indicate to this class
  */
 
+/**
+ * @typedef Config
+ * @type {object}
+ * @property {Object.<string, PageObject>} pageObjects - dictionary of PageObjects
+ * @property {Object.<string, StateClass>} stateClasses - dictionary of StateClasses
+ * @property {Object.<string, string>} endpoints - dictionary of Endpoints
+ * @property {Object.<string, string>} texts - dictionary of Texts
+ */
+
 const suiteFileName = 'todo';
 
 fs.readFile(`${suiteFileName}.suite.txt`, 'utf8', function (err, data) {
@@ -32,11 +41,16 @@ function handleInputData(suiteFileName, data) {
       data.split('\r\n\r\n')
           .map(getDataWithoutHeadingOrNull);
 
-    const pageObjects = parseInputPageObjectData(inputPageObjectData);
-    const stateClasses = parseInputStateClassData(inputStateClassData);
+    /** @type {Config} */
+    const configs = {
+        pageObjects: parseInputPageObjectData(inputPageObjectData),
+        stateClasses: parseInputStateClassData(inputStateClassData),
+        endpoints: {},
+        texts: {},
+    };
 
-    generateSpecFile(suiteFileName, pageObjects, stateClasses, testSuiteName, inputBeforeEachData, inputTestsData);
-    generateDataFile(suiteFileName, pageObjects, stateClasses);
+    generateSpecFile(suiteFileName, configs, testSuiteName, inputBeforeEachData, inputTestsData);
+    generateDataFile(suiteFileName, configs);
 }
 
 function getDataWithoutHeadingOrNull(config) {
