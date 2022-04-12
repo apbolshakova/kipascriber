@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs';
-import {
-    parseInputPageObjectData,
-    parseInputStateClassData,
-} from './functions/parse-input.mjs';
+import { parseInputPageObjectData, parseInputStateClassData } from './functions/parse-input.mjs';
 import { generateSpecFile } from './functions/generate-spec-file.mjs';
 import { generateDataFile } from './functions/generate-data-file.mjs';
 
@@ -21,21 +18,29 @@ import { generateDataFile } from './functions/generate-data-file.mjs';
  * @property {string[]} keywords - keywords that indicate to this class
  */
 
-fs.readFile('todo.suite.txt', 'utf8', function (err, data) {
+const suiteFileName = 'todo';
+
+fs.readFile(`${suiteFileName}.suite.txt`, 'utf8', function (err, data) {
     if (err) {
         return console.log(err);
     }
-    handleInputData(data);
+    handleInputData(suiteFileName, data);
 });
 
-function handleInputData(data) {
+function handleInputData(suiteFileName, data) {
     const [inputPageObjectData, inputStateClassData, testSuiteName, inputBeforeEachData, ...inputTestsData] =
       data.split('\r\n\r\n')
-          .map((config) => config.substring(config.indexOf('\n') + 1));
+          .map(getDataWithoutHeadingOrNull);
 
     const pageObjects = parseInputPageObjectData(inputPageObjectData);
     const stateClasses = parseInputStateClassData(inputStateClassData);
 
-    generateSpecFile(pageObjects, stateClasses, testSuiteName, inputBeforeEachData, inputTestsData);
-    generateDataFile(pageObjects, stateClasses);
+    generateSpecFile(suiteFileName, pageObjects, stateClasses, testSuiteName, inputBeforeEachData, inputTestsData);
+    generateDataFile(suiteFileName, pageObjects, stateClasses);
+}
+
+function getDataWithoutHeadingOrNull(config) {
+    const dataStartIndex = config.indexOf('\n');
+
+    return dataStartIndex === -1 ? null : config.substring(dataStartIndex + 1);
 }

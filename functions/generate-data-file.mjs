@@ -1,3 +1,3 @@
-export function generateDataFile(pageObjects, stateClasses) {
-
+export function generateDataFile(suiteFileName, pageObjects, stateClasses) {
+    // TODO implement
 }
