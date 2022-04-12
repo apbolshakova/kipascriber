@@ -41,6 +41,5 @@ function handleInputData(suiteFileName, data) {
 
 function getDataWithoutHeadingOrNull(config) {
     const dataStartIndex = config.indexOf('\n');
-
     return dataStartIndex === -1 ? null : config.substring(dataStartIndex + 1);
 }

@@ -38,7 +38,6 @@ function generateBeforeEachBlock(inputBeforeEachData, pageObjects, stateClasses)
     let beforeEachBlock = '    beforeEach(() => {\r\n';
     beforeEachBlock += generateTestSteps(inputBeforeEachData.split('\r\n'), pageObjects, stateClasses);
     beforeEachBlock += '    })\r\n\r\n';
-
     return beforeEachBlock;
 }
 
@@ -49,15 +48,13 @@ function generateTestBlock(inputTestData, pageObjects, stateClasses) {
     let testBlock = `    it('${testTitle}', () => {\r\n`;
     testBlock += generateTestSteps(splitTestData, pageObjects, stateClasses);
     testBlock += '    })\r\n\r\n';
-
     return testBlock;
 }
 
 function generateTestSteps(inputBeforeEachData, pageObjects, stateClasses) {
     const testStepsIndent = ' '.repeat(8);
-
     return testStepsIndent +
       inputBeforeEachData.filter((stepData) => !!stepData)
-                         .map((stepData) => generateTestStep(stepData, pageObjects, stateClasses))
+                         .map((stepData) => generateTestStep(stepData, pageObjects, stateClasses, testStepsIndent))
                          .join('\r\n' + testStepsIndent);
 }
