@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import fs from 'fs';
-import { parseInputPageObjectData, parseInputStateClassData } from './functions/parse-input.mjs';
-import { generateSpecFile } from './functions/generate-spec-file.mjs';
-import { generateDataFile } from './functions/generate-data-file.mjs';
+import { parseInputPageObjectData, parseInputStateClassData } from './modules/parse-input.mjs';
+import { generateSpecFile } from './modules/generate-spec-file.mjs';
+import { generateDataFile } from './modules/generate-data-file.mjs';
 
 /**
  * @typedef PageObject
