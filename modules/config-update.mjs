@@ -10,7 +10,10 @@ export function updateEndpointsConfig(config, url) {
     return endpointName;
 }
 
-export function updateTextsConfig(config) {
+export function updateTextsConfig(config, text) {
+    const textName = getUniquePropertyName(config.texts, text);
+    config.texts[textName] = text;
+    return textName;
 }
 
 function getUniquePropertyName(configParams, dataString) {

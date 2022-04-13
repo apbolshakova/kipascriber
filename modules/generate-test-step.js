@@ -1,4 +1,4 @@
-import { updateEndpointsConfig } from './config-update.mjs';
+import { updateEndpointsConfig, updateTextsConfig } from './config-update.mjs';
 
 /**
  * @param {string} stepData - description of step
@@ -8,6 +8,7 @@ import { updateEndpointsConfig } from './config-update.mjs';
 
 const VISIT_ACTION_REGEX = /^Перейти на ([\w:/._\-]+)$/i;
 const SCROLL_PAGE_ACTION_REGEX = /^Пролистать страницу (наверх|вниз|влево|вправо|в центр)$/i;
+const CONTAINS_TEXT_SELECTION_REGEX = /элемент с текстом "(.+)"/i;
 
 export function generateTestStep(stepData, config, testStepsIndent) {
     if (!stepData.length) return '';
@@ -28,8 +29,8 @@ function generateStepAction(stepDescription, config, testStepsIndent) {
         return generateScrollPageCommand(stepDescription);
     }
 
-    // const elementSelectionCommand = generateElementSelectionCommand();
-    //
+    const elementSelectionCommand = generateElementSelectionCommand(stepDescription, config, testStepsIndent);
+
     // if (isCheckAction()) {
     //     return elementSelectionCommand + generateCheckCommand();
     // }
@@ -68,5 +69,77 @@ function mapDescriptionToDirection(dirDescription) {
             return 'right';
         case 'в центр':
             return 'center';
+    }
+}
+
+function generateElementSelectionCommand(stepDescription, config, testStepsIndent) {
+    const selectionCommand = generateSelectionCommand(stepDescription, config);
+    const offsetCommand = generateOffsetCommand(stepDescription);
+
+    return selectionCommand + (offsetCommand && '\r\n' + testStepsIndent + '  ' + offsetCommand);
+}
+
+function generateSelectionCommand(stepDescription, config) {
+    const pageObject = tryToGetPageObject(stepDescription, config);
+
+    if (pageObject) {
+        return `cy.get(PageObject.${pageObject})`;
+    }
+
+    if (isContainsTextSelection(stepDescription)) {
+        return generateContainsTextCommand(stepDescription, config);
+    }
+
+    if (stepDescription.includes(' чекбокс')) {
+        return `.find('[type="checkbox"]')`;
+    }
+
+    if (stepDescription.includes(' радиокнопк')) {
+        return `.find('[type="radio"]')`;
+    }
+
+    if (stepDescription.includes(' текстовое поле')) {
+        return `.find('[type="text"]')`;
+    }
+}
+
+function tryToGetPageObject(stepDescription, config) {
+    let pageObjectName = null;
+    Object.entries(config.pageObjects).some(([name, pageObject]) =>
+      pageObject.keywords.some((keyword) => {
+          if (stepDescription.includes(keyword)) {
+              pageObjectName = name;
+              return true;
+          }
+          return false;
+      }));
+    return pageObjectName;
+}
+
+function isContainsTextSelection(stepDescription) {
+    return CONTAINS_TEXT_SELECTION_REGEX.test(stepDescription);
+}
+
+function generateContainsTextCommand(stepDescription, config) {
+    const text = CONTAINS_TEXT_SELECTION_REGEX.exec(stepDescription)[1];
+    const textName = updateTextsConfig(config, text);
+    return `cy.contains(Text.${textName})`;
+}
+
+function generateOffsetCommand(stepDescription) {
+    if (stepDescription.includes(' перв')) {
+        return '.first()';
+    }
+
+    if (stepDescription.includes(' последн')) {
+        return '.last()';
+    }
+
+    if (stepDescription.includes(' элемент перед')) {
+        return '.prev()';
+    }
+
+    if (stepDescription.includes(' элемент после')) {
+        return '.next()';
     }
 }
