@@ -1,6 +1,6 @@
 {
   "name": "kipascriber",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Tool for generating client side functional tests from a description in natural language.",
   "main": "index.js",
   "type": "module",
@@ -11,6 +11,7 @@
   "author": "Anzhela Bolshakova <bolshakova.anzhe@gmail.com> (https://github.com/apbolshakova)",
   "license": "ISC",
   "dependencies": {
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
   }
 }
