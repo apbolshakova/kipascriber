@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { generateTestStep } from './generate-test-step.js';
+import { generateTestStep } from './generate-test-step.mjs';
 
 /**
  * @param {string} suiteFileName

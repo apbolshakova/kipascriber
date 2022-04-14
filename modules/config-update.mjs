@@ -1,9 +1,3 @@
-export function updatePageObjectsConfig(config) {
-}
-
-export function updateStateClassesConfig(config) {
-}
-
 export function updateEndpointsConfig(config, url) {
     const endpointName = getUniquePropertyName(config.endpoints, url);
     config.endpoints[endpointName] = url;
