@@ -1,6 +1,8 @@
 import fs from 'fs';
 import { generateTestStep } from './generate-test-step.mjs';
 
+const INDENT = ' '.repeat(2);
+
 /**
  * @param {string} suiteFileName
  * @param {Config} config
@@ -29,14 +31,14 @@ export function generateSpecFile(
         if (err) {
             return console.log(err);
         }
-        console.log('Success!');
+        console.log('.spec file generation success!');
     });
 }
 
 function generateBeforeEachBlock(inputBeforeEachData, config) {
-    let beforeEachBlock = '    beforeEach(() => {\r\n';
+    let beforeEachBlock = `${INDENT}beforeEach(() => {\r\n`;
     beforeEachBlock += generateTestSteps(inputBeforeEachData.split('\r\n'), config);
-    beforeEachBlock += '    })\r\n\r\n';
+    beforeEachBlock += `${INDENT}})\r\n\r\n`;
     return beforeEachBlock;
 }
 
@@ -44,14 +46,14 @@ function generateTestBlock(inputTestData, config) {
     const splitTestData = inputTestData.split('\r\n');
     const testTitle = splitTestData.shift();
 
-    let testBlock = `    it('${testTitle}', () => {\r\n`;
+    let testBlock = `${INDENT}it('${testTitle}', () => {\r\n`;
     testBlock += generateTestSteps(splitTestData, config);
-    testBlock += '    })\r\n\r\n';
+    testBlock += `${INDENT}})\r\n\r\n`;
     return testBlock;
 }
 
 function generateTestSteps(inputBeforeEachData, config) {
-    const testStepsIndent = ' '.repeat(8);
+    const testStepsIndent = INDENT.repeat(2);
     return testStepsIndent +
       inputBeforeEachData.filter((stepData) => !!stepData)
                          .map((stepData) => generateTestStep(stepData, config, testStepsIndent))
