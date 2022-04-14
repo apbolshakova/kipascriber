@@ -10,6 +10,9 @@ const TEXT_CHECK_REGEX = /текст (не)? "(.+)"$/i;
 const LENGTH_CHECK_REGEX = /(не)? (\d+) штук/i;
 const CHECKEDNESS_CHECK_REGEX = /(не)? отмечен/i;
 const VISIBILITY_CHECK_REGEX = /что (не)? вид/i;
+const SCROLL_TO_ACTION_REGEX = /^Пролистать (.+) (наверх|вниз|влево|вправо|в центр)$/i;
+const SELECT_ACTION_REGEX = /^Выбрать опцию "(.+)"/i;
+const TYPE_ACTION_REGEX = /ввести "(.+)"/i;
 
 /**
  * @param {string} stepData - description of step
@@ -42,7 +45,7 @@ function generateStepAction(stepDescription, config, testStepsIndent) {
         return elementSelectionCommand + '\r\n' + subCommandIndent + generateCheckCommand(stepDescription, config);
     }
 
-    // return elementSelectionCommand + '\r\n' + subCommandIndent + generateActionCommand();
+    return elementSelectionCommand + '\r\n' + subCommandIndent + generateActionCommand(stepDescription, config);
 }
 
 function isVisitAction(stepDescription) {
@@ -156,6 +159,13 @@ function isCheckAction(stepDescription) {
 }
 
 function generateCheckCommand(stepDescription, config) {
+    // TODO
+    // const stateClass = tryToGetStateClass(stepDescription, config);
+    //
+    // if (stateClass) {
+    //     return `.should('have.class', StateClass.${stateClass})`;
+    // }
+
     if (isAttrCheck(stepDescription)) {
         return generateAttrCheckCommand(stepDescription);
     }
@@ -167,10 +177,6 @@ function generateCheckCommand(stepDescription, config) {
     if (isTextCheck(stepDescription)) {
         return generateTextCheckCommand(stepDescription, config);
     }
-
-    // if (isClassCheck) {
-    //     return;
-    // }
 
     if (isLengthCheck(stepDescription)) {
         return generateLengthCheckCommand(stepDescription);
@@ -243,4 +249,87 @@ function isVisibilityCheck(stepDescription) {
 function generateVisibilityCheckCommand(stepDescription) {
     const isNot = !!VISIBILITY_CHECK_REGEX.exec(stepDescription)[1];
     return `.should('${isNot ? 'not.' : ''}be.visible')`;
+}
+
+function generateActionCommand(stepDescription, config) {
+    if (isScrollToAction(stepDescription)) {
+        return generateScrollToCommand(stepDescription);
+    }
+
+    if (stepDescription.startsWith('Пролистать страницу')) {
+        return '.scrollIntoView()';
+    }
+
+    if (stepDescription.startsWith('Дважды кликнуть')) {
+        return '.dblclick()';
+    }
+
+    if (stepDescription.startsWith('Кликнуть правой кнопкой')) {
+        return '.rightclick()';
+    }
+
+    if (stepDescription.startsWith('Кликнуть')) {
+        return '.click()';
+    }
+
+    if (stepDescription.startsWith('Отметить')) {
+        return '.check()';
+    }
+
+    if (stepDescription.startsWith('Снять отметку')) {
+        return '.uncheck()';
+    }
+
+    if (stepDescription.startsWith('Очистить текст')) {
+        return '.clear()';
+    }
+
+    if (stepDescription.startsWith('Установить фокус')) {
+        return '.focus()';
+    }
+
+    if (stepDescription.startsWith('Снять фокус')) {
+        return '.blur()';
+    }
+
+    if (stepDescription.startsWith('Отправить')) {
+        return '.submit()';
+    }
+
+    if (isSelectAction(stepDescription)) {
+        return generateSelectCommand(stepDescription, config);
+    }
+
+    if (isTypeAction(stepDescription)) {
+        return generateTypeCommand(stepDescription, config);
+    }
+}
+
+function isScrollToAction(stepDescription) {
+    return SCROLL_TO_ACTION_REGEX.test(stepDescription);
+}
+
+function generateScrollToCommand(stepDescription) {
+    const direction = SCROLL_TO_ACTION_REGEX.exec(stepDescription)[1];
+    return `.scrollTo('${mapDescriptionToDirection(direction)}')`;
+}
+
+function isSelectAction(stepDescription) {
+    return SELECT_ACTION_REGEX.test(stepDescription);
+}
+
+function generateSelectCommand(stepDescription, config) {
+    const text = SELECT_ACTION_REGEX.exec(stepDescription)[1];
+    const textName = updateTextsConfig(config, text);
+    return `.select(Text.${textName})`;
+}
+
+function isTypeAction(stepDescription) {
+    return TYPE_ACTION_REGEX.test(stepDescription);
+}
+
+function generateTypeCommand(stepDescription, config) {
+    const text = TYPE_ACTION_REGEX.exec(stepDescription)[1];
+    const textName = updateTextsConfig(config, text);
+    return `.type(Text.${textName})`;
 }
