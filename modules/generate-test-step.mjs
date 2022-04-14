@@ -159,12 +159,11 @@ function isCheckAction(stepDescription) {
 }
 
 function generateCheckCommand(stepDescription, config) {
-    // TODO
-    // const stateClass = tryToGetStateClass(stepDescription, config);
-    //
-    // if (stateClass) {
-    //     return `.should('have.class', StateClass.${stateClass})`;
-    // }
+    const stateClass = tryToGetStateClass(stepDescription, config);
+
+    if (stateClass) {
+        return generateClassCheckCommand(stepDescription, config, stateClass);
+    }
 
     if (isAttrCheck(stepDescription)) {
         return generateAttrCheckCommand(stepDescription);
@@ -189,6 +188,24 @@ function generateCheckCommand(stepDescription, config) {
     if (isVisibilityCheck(stepDescription)) {
         return generateVisibilityCheckCommand(stepDescription);
     }
+}
+
+function tryToGetStateClass(stepDescription, config) {
+    let stateClassName = null;
+    Object.entries(config.stateClasses).some(([name, stateClass]) =>
+      stateClass.keywords.some((keyword) => {
+          if (stepDescription.endsWith(keyword)) {
+              stateClassName = name;
+              return true;
+          }
+          return false;
+      }));
+    return stateClassName;
+}
+
+function generateClassCheckCommand(stepDescription, config, stateClass) {
+    const isNot = stepDescription.endsWith(`не ${config.stateClasses[stateClass]}`);
+    return `.should('${isNot ? 'not.' : ''}have.class', StateClass.${stateClass})`;
 }
 
 function isAttrCheck(stepDescription) {

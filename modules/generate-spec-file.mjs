@@ -12,7 +12,7 @@ export function generateSpecFile(
   suiteFileName, config, testSuiteName, inputBeforeEachData,
   inputTestsData) {
     let specFileContent =
-      `import {PageObject, StateClass, Endpoint, Text} from '${suiteFileName}.data'\r\n\r\n` +
+      `import { PageObject, StateClass, Endpoint, Text } from '${suiteFileName}.data'\r\n\r\n` +
       `describe('${testSuiteName}', () => {\r\n`;
 
     if (inputBeforeEachData) {
