@@ -2,7 +2,7 @@ import { updateEndpointsConfig, updateTextsConfig } from './config-update.mjs';
 
 const VISIT_ACTION_REGEX = /^Перейти на ([\w:/._\-]+)$/i;
 const SCROLL_PAGE_ACTION_REGEX = /^Пролистать страницу (наверх|вниз|влево|вправо|в центр)$/i;
-const CONTAINS_TEXT_SELECTION_REGEX = /элемент с текстом "(.+)"/i;
+const CONTAINS_TEXT_SELECTION_REGEX = /элемент(ом)? с текстом "(.+)"/i;
 const CHECK_ACTION_REGEX = /^Проверить/i;
 const ATTR_CHECK_REGEX = /(не )?цвета ([\w\d#().,% \-]+)$/i;
 const VALUE_CHECK_REGEX = /(не )?значение "(.+)"$/i;
@@ -131,7 +131,7 @@ function isContainsTextSelection(stepDescription) {
 }
 
 function generateContainsTextCommand(stepDescription, config) {
-    const text = CONTAINS_TEXT_SELECTION_REGEX.exec(stepDescription)[1];
+    const text = CONTAINS_TEXT_SELECTION_REGEX.exec(stepDescription)[2];
     const textName = updateTextsConfig(config, text);
     return `cy.contains(Text.${textName})`;
 }
@@ -267,7 +267,7 @@ function isVisibilityCheck(stepDescription) {
 
 function generateVisibilityCheckCommand(stepDescription) {
     const isNot = !!VISIBILITY_CHECK_REGEX.exec(stepDescription)[1];
-    return `.should('${isNot ? 'not.' : ''}be.visible')`;
+    return `.should('${isNot ? 'not.' : ''}be.exist')`;
 }
 
 function generateActionCommand(stepDescription, config) {

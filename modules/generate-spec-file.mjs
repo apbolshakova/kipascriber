@@ -32,7 +32,7 @@ export function generateSpecFile(
         if (err) {
             return console.log(err);
         }
-        console.log('.spec file generation success!');
+        console.log(`${dirName}\\${suiteFileName}.spec.js file generation success!`);
     });
 }
 

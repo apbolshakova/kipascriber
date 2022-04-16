@@ -18,7 +18,7 @@ export function generateDataFile(suiteFileName, dirName, config) {
         if (err) {
             return console.log(err);
         }
-        console.log('.data file generation success!');
+        console.log(`${dirName}\\${suiteFileName}.data.js file generation success!`);
     });
 }
 

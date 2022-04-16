@@ -11,7 +11,8 @@ export function updateTextsConfig(config, text) {
 }
 
 function getUniquePropertyName(configParams, dataString) {
-    const propertyName = [...dataString.match(/\b([A-Za-zА-Яа-я]\w*)\b/g)]
+    const NAME_FOR_NUMBERS_PROPERTY = 'number';
+    const propertyName = [...(dataString.match(/\b([A-Za-zА-Яа-я]\w*)\b/g) ?? [NAME_FOR_NUMBERS_PROPERTY])]
       .map((word) => word[0].toUpperCase() + word.substring(1))
       .join('');
 
