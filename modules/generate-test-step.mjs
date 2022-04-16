@@ -101,15 +101,15 @@ function generateSelectionCommand(stepDescription, config) {
     }
 
     if (stepDescription.includes(' чекбокс')) {
-        return `.find('[type="checkbox"]')`;
+        return `cy.find('[type="checkbox"]')`;
     }
 
     if (stepDescription.includes(' радиокнопк')) {
-        return `.find('[type="radio"]')`;
+        return `cy.find('[type="radio"]')`;
     }
 
     if (stepDescription.includes(' текстовое поле')) {
-        return `.find('[type="text"]')`;
+        return `cy.find('[type="text"]')`;
     }
 }
 
@@ -159,10 +159,10 @@ function isCheckAction(stepDescription) {
 }
 
 function generateCheckCommand(stepDescription, config) {
-    const stateClass = tryToGetStateClass(stepDescription, config);
+    const [stateClass, stateKeyword] = tryToGetStateClassAndKeyword(stepDescription, config);
 
-    if (stateClass) {
-        return generateClassCheckCommand(stepDescription, config, stateClass);
+    if (stateClass && stateKeyword) {
+        return generateClassCheckCommand(stepDescription, config, stateClass, stateKeyword);
     }
 
     if (isAttrCheck(stepDescription)) {
@@ -190,21 +190,23 @@ function generateCheckCommand(stepDescription, config) {
     }
 }
 
-function tryToGetStateClass(stepDescription, config) {
+function tryToGetStateClassAndKeyword(stepDescription, config) {
     let stateClassName = null;
+    let stateKeyword = null;
     Object.entries(config.stateClasses).some(([name, stateClass]) =>
       stateClass.keywords.some((keyword) => {
           if (stepDescription.endsWith(keyword)) {
               stateClassName = name;
+              stateKeyword = keyword;
               return true;
           }
           return false;
       }));
-    return stateClassName;
+    return [stateClassName, stateKeyword];
 }
 
-function generateClassCheckCommand(stepDescription, config, stateClass) {
-    const isNot = stepDescription.endsWith(`не ${config.stateClasses[stateClass]}`);
+function generateClassCheckCommand(stepDescription, config, stateClass, stateKeyword) {
+    const isNot = stepDescription.endsWith(`не ${stateKeyword}`);
     return `.should('${isNot ? 'not.' : ''}have.class', StateClass.${stateClass})`;
 }
 
@@ -327,7 +329,7 @@ function isScrollToAction(stepDescription) {
 }
 
 function generateScrollToCommand(stepDescription) {
-    const direction = SCROLL_TO_ACTION_REGEX.exec(stepDescription)[1];
+    const direction = SCROLL_TO_ACTION_REGEX.exec(stepDescription)[2];
     return `.scrollTo('${mapDescriptionToDirection(direction)}')`;
 }
 
