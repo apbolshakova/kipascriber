@@ -5,13 +5,14 @@ const INDENT = ' '.repeat(2);
 
 /**
  * @param {string} suiteFileName
+ * @param {string} dirName
  * @param {Config} config
  * @param {string} testSuiteName - data from 'Тест-сьют' section
  * @param {string} inputBeforeEachData - data from 'Перед каждым тестом' section
  * @param {string[]} inputTestsData - data from tests section
  */
 export function generateSpecFile(
-  suiteFileName, config, testSuiteName, inputBeforeEachData,
+  suiteFileName, dirName, config, testSuiteName, inputBeforeEachData,
   inputTestsData) {
     let specFileContent =
       `import { PageObject, StateClass, Endpoint, Text } from '${suiteFileName}.data'\r\n\r\n` +
@@ -27,7 +28,7 @@ export function generateSpecFile(
     specFileContent = specFileContent.substring(0, specFileContent.length - 2); // Delete extra newline
     specFileContent += '})';
 
-    fs.writeFile(`${suiteFileName}.spec.js`, specFileContent, err => {
+    fs.writeFile(`${dirName}\\${suiteFileName}.spec.js`, specFileContent, err => {
         if (err) {
             return console.log(err);
         }

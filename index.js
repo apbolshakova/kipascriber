@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { join, basename } from 'path';
+import { join, basename, dirname } from 'path';
 import { readFile, readdirSync, statSync } from 'fs';
 import { parseInputPageObjectData, parseInputStateClassData } from './modules/parse-input.mjs';
 import { generateSpecFile } from './modules/generate-spec-file.mjs';
@@ -30,14 +30,16 @@ import { generateDataFile } from './modules/generate-data-file.mjs';
 
 function main() {
     const SUITE_FILE_EXTENSION = '.suite.txt';
-    const suiteFiles = getFilesByExtension('.', SUITE_FILE_EXTENSION);
+    const BASE_TESTS_DIRECTORY = './cypress/';
+    const suiteFiles = getFilesByExtension(BASE_TESTS_DIRECTORY, SUITE_FILE_EXTENSION);
 
     suiteFiles.forEach((suiteFilePath) => {
         const suiteFileName = basename(suiteFilePath, SUITE_FILE_EXTENSION);
-        console.log(suiteFileName + ' suite found...');
+        const dirName = dirname(suiteFilePath);
+        console.log(`${suiteFileName} suite found in ${suiteFilePath}...`);
         readFile(suiteFilePath, 'utf8', function (err, data) {
             if (err) return console.log(err);
-            handleInputData(suiteFileName, data);
+            handleInputData(suiteFileName, dirName, data);
         });
     });
 }
@@ -63,7 +65,7 @@ function getFilesByExtension(dir, extn, files, result, regex) {
     return result;
 }
 
-function handleInputData(suiteFileName, data) {
+function handleInputData(suiteFileName, dirName, data) {
     const [inputPageObjectData, inputStateClassData, testSuiteName, inputBeforeEachData, ...inputTestsData] =
       data.split('\r\n\r\n')
           .map(getDataWithoutHeadingOrNull);
@@ -76,8 +78,8 @@ function handleInputData(suiteFileName, data) {
         texts: {},
     };
 
-    generateSpecFile(suiteFileName, configs, testSuiteName, inputBeforeEachData, inputTestsData);
-    generateDataFile(suiteFileName, configs);
+    generateSpecFile(suiteFileName, dirName, configs, testSuiteName, inputBeforeEachData, inputTestsData);
+    generateDataFile(suiteFileName, dirName, configs);
 }
 
 function getDataWithoutHeadingOrNull(config) {

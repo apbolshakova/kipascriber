@@ -2,14 +2,19 @@ import fs from 'fs';
 
 const INDENT = ' '.repeat(2);
 
-export function generateDataFile(suiteFileName, config) {
+/**
+ * @param {string} suiteFileName
+ * @param {string} dirName
+ * @param {Config} config
+ */
+export function generateDataFile(suiteFileName, dirName, config) {
     let dataFileContent =
       generatePageObjectData(config.pageObjects) +
       generateStateClassData(config.stateClasses) +
       generateEndpointData(config.endpoints) +
       generateTextData(config.texts);
 
-    fs.writeFile(`${suiteFileName}.data.js`, dataFileContent, err => {
+    fs.writeFile(`${dirName}\\${suiteFileName}.data.js`, dataFileContent, err => {
         if (err) {
             return console.log(err);
         }
