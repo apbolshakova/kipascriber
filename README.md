@@ -231,5 +231,5 @@ export const Text = {
 | Установить фокус (выделить) элемент | Установить фокус на поле ввода | cy.get(PageObject.TodoInput)<br>.focus() |
 | Снять фокус с элемента | Снять фокус с поля ввода | cy.get(PageObject.TodoInput)<br>.blur() |
 | Отправить элемент (создать событие submit, например, для формы) | Отправить форму регистрации | cy.get(PageObject.RegistrationForm)<br>.submit() |
-| Выбрать опцию в выпадающем списке | Выбрать опцию "apples" в списке фруктов | cy.get(PageObject.FruitSelectList)<br>.select(Text.Apples) |
+| Выбрать опцию в выпадающем списке (для элементов select) | Выбрать опцию "apples" в списке фруктов | cy.get(PageObject.FruitSelectList)<br>.select(Text.Apples) |
 | Ввести текст в элемент (кнопки клавиатуры указываются в фигурных скобках) | В поле ввода ввести "Feed the cat{enter}" | cy.get(PageObject.TodoInput)<br>.type(Text.FeedTheCatEnter) |
