@@ -9,6 +9,8 @@ export function parseInputPageObjectData(inputPageObjectData) {
 
     const pageObjects = {};
 
+    if (!inputPageObjectData) return pageObjects;
+
     inputPageObjectData.split('\r\n').forEach((pageObjectData) => {
         const propName =
           pageObjectData.substring(0, pageObjectData.indexOf(NAME_DIVIDER))
@@ -37,6 +39,8 @@ export function parseInputStateClassData(inputStateClassData) {
     const KEYWORD_DIVIDER = '|';
 
     const stateClass = {};
+
+    if (!inputStateClassData) return stateClass;
 
     inputStateClassData.split('\r\n').forEach((stateClassData) => {
         const propName =
