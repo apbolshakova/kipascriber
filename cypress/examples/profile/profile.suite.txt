@@ -1,0 +1,43 @@
+Объекты:
+FirstName: [formcontrolname="firstName"]>input // поле с именем
+LastName: [formcontrolname="lastName"]>input // поле с фамилией
+Email: [formcontrolname="email"]>input // поле с эл. почтой
+Phone: [formcontrolname="phoneNumber"]>input // поле с телефоном
+Country: [formcontrolname="country"]>kendo-searchbar>input // поле со страной
+
+Состояния:
+Disabled: k-state-disabled // заблокирован
+
+Тест-сьют:
+Раздел "Profile"
+
+Перед каждым тестом:
+Шаг 1 - Перейти на https://telerik.github.io/kendo-angular/coffee-warehouse/
+Шаг 2 - Кликнуть на элемент с текстом "Profile"
+
+Тест:
+Валидация
+Шаг 3 - Проверить, что не виден элемент с текстом "Error: First Name is required"
+Шаг 4 - Очистить текст в поле с именем
+Шаг 5 - Проверить, что виден элемент с текстом "Error: First Name is required"
+Шаг 6 - Проверить, что не виден элемент с текстом "Error: Last Name is required"
+Шаг 7 - Очистить текст в поле с фамилией
+Шаг 8 - Проверить, что виден элемент с текстом "Error: Last Name is required"
+Шаг 9 - Проверить, что не виден элемент с текстом "Error: Email is required"
+Шаг 10 - Очистить текст в поле с эл. почтой
+Шаг 11 - Проверить, что виден элемент с текстом "Error: Email is required"
+Шаг 12 - В поле с эл. почтой ввести "Invalid email"
+Шаг 13 - Проверить, что виден элемент с текстом "Error: Not valid email format"
+Шаг 14 - Очистить текст в поле с телефоном
+Шаг 15 - Проверить, что виден элемент с текстом "Error: Phone number is required"
+Шаг 16 - В поле с эл. почтой ввести "123"
+Шаг 17 - Проверить, что виден элемент с текстом "Error: Not a valid phone number"
+Шаг 18 - Проверить, что элемент с текстом "Save Changes" заблокирован
+
+Тест:
+Изменение данных
+Шаг 3 - Очистить текст в поле с именем
+Шаг 4 - В поле с именем ввести "Anzhela"
+Шаг 5 - Проверить, что элемент с текстом "Save Changes" не заблокирован
+Шаг 6 - Кликнуть на элемент с текстом "Save Changes"
+Шаг 7 - Проверить, что виден элемент с текстом "Profile changes have been saved."
